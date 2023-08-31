@@ -5,3 +5,133 @@ date: '2023-08-31'
 output: html_document
 ---
 
+## Week 6
+
+### first paper
+#### about nycflights13 package
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+```
+
+1. have a look at database 'flights'
+```{r}
+# view(flights) will open another window to see the whole database
+
+# or use glimpse, I can see the type of each coloum data 
+# int for integer
+# dbl for double(real number)
+# chr for character
+# dttm for data-time
+glimpse(flights)
+```
+
+2. rows
+
+(1) filter()
+
+```{r}
+# to select be value, use <, >, ==, != and &
+jan1 <- flights %>%
+  filter(month == 1, day == 1)
+```
+
+```{r}
+# a quick way to select by month using '%in%'
+flights %>%
+  filter(month %in% c(1,2)) # select Jan and Feb
+```
+
+(2) arrange - changing order
+
+```{r}
+# small to big
+flights %>%
+  arrange(year, month, day, dep_time)
+```
+
+```{r}
+# big to small
+flights %>%
+  arrange(desc(dep_delay))
+```
+
+(3) distinct - find unique rows
+
+```{r}
+# to remove duplicate rows
+flights %>%
+  distinct()
+```
+
+```{r}
+# find unique rows by origin and dest
+flights %>%
+  distinct(origin, dest, .keep_all = T)
+```
+
+(4) count - order by existence frequency
+```{r}
+# to reorder the dataframe by the number of existence
+flights %>% 
+  count(origin, dest, sort = T) # TURE for big-to-small order
+```
+
+##### Exercise
+
+1. 
+```{r}
+flights %>%
+  filter(arr_delay >= 2, 
+         dest %in% c("IAH", "HOU"),
+         carrier %in% c("UA","AA","DL"),
+         month %in% c(7,8,9),
+         dep_delay == 0,
+         arr_delay + 30 <= dep_delay)
+```
+
+2. 
+```{r}
+flights %>% 
+  arrange(desc(dep_delay))
+```
+
+```{r}
+flights %>%
+  arrange(dep_time)
+```
+A lot of 1 and 2 for dep_time, which seems not fit with the description in help saying:
+dep_time are in the form of HHMM
+
+3. 
+```{r}
+flights %>%
+  arrange(arr_time-dep_time)
+```
+
+4. 
+```{r}
+flights %>%
+  filter(year == 2013) %>%
+  count(tailnum, sort = T)
+```
+
+```{r}
+flights %>% 
+  arrange(distance)
+```
+
+```{r}
+flights %>%
+  arrange(dep_time) %>%
+  filter(month == 1)
+```
+
+```{r}
+flights %>%
+  filter(month == 1) %>%
+  arrange(dep_time)
+```
+
+It seems no obvious difference.
